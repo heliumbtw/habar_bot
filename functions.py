@@ -152,6 +152,12 @@ def send_wallpost_things(access_vk_session, event, groups_dict, first_name, text
                                         'random_id': random.randint(0, 10000000), "attachment": photos_string})
 
 
+def habar_oceni(vk_s, event, first_name):
+    vk_s.method('messages.send', {'peer_id': event.obj.peer_id,
+                                  'message': str(first_name) + ', ' + str(random.randint(0, 10)) + '/10',
+                                  'random_id': random.randint(0, 10000000)})
+
+
 def get_random_mudrost(access_vk_session):
     max_num = (access_vk_session.method('wall.search', {'owner_id': mudrost_group_id, 'query': '#мудрость',
                                                         'count': 0, 'access_token': service_token}))['count']
@@ -210,7 +216,6 @@ def aws_tts(vk_s, polly_cl, first_name, event, text_to_say):
                                   {'type': 'audio_message',
                                    'peer_id': event.obj.peer_id
                                    })['upload_url']
-
             file = {'file': ('speech.ogg', open('speech.ogg', 'rb'))}
             r = requests.post(tts_url, files=file)
             r_string = r.json()['file']

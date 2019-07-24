@@ -12,7 +12,8 @@ while True:
                 first_name = functions.get_name(event)
                 if 'привет' in response:
                     vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', ' + random.choice(privet_answer),
+                                                        'message': str(first_name) + ', '
+                                                                                   + random.choice(privet_answer),
                                                         'random_id': random.randint(0, 10000000)})
                 elif response in ['пока']:
                     vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
@@ -47,7 +48,8 @@ while True:
                                                             'random_id': random.randint(0, 10000000)})
                 elif response in ['хабар помощь']:
                     vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', Статья с функциями скоро будет',
+                                                        'message': str(first_name) +
+                                                        ', Статья с функциями скоро будет',
                                                         'random_id': random.randint(0, 10000000)})
                 elif response in ['хабар флекс']:
                     functions.get_flex_picture(event, first_name)
@@ -69,6 +71,8 @@ while True:
                     functions.send_wallpost_things(vk_session_access, event, winx_group_id, first_name, 1, 1)
                 elif 'хабар скажи ' in response:
                     functions.habar_say(vk_session, polly_client, response, first_name, event)
+                elif response in ['хабар оцени']:
+                    functions.habar_oceni(vk_session, event, first_name)
                 elif ('альянс' in response) or ('alliance' in response):
                     functions.send_alliance(vk_session, event, first_name)
                 elif 'пидор' in response:
