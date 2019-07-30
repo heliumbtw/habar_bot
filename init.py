@@ -1,87 +1,93 @@
 from vk_api.bot_longpoll import VkBotEventType
-import random
-import functions
-from words import *
-from auth import *
+
+from functions import *
+
+
+def get_name():
+    user_info = (Auth.vk_session_group.method('users.get', {'user_ids': event.obj.from_id}))
+    name = user_info[0]['first_name']
+    return str(name)
+
 
 while True:
     try:
-        for event in longpoll.listen():
+        for event in Auth.longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 response = event.obj.text.lower()
-                first_name = functions.get_name(event)
+                first_name = get_name()
                 if 'привет' in response:
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', '
-                                                                                   + random.choice(privet_answer),
-                                                        'random_id': random.randint(0, 10000000)})
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': first_name + ', '
+                                                                   + random.choice(privet_answer),
+                                                                   'random_id': random.randint(0, 10000000)})
                 elif response in ['пока']:
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', ' + random.choice(poka_answer),
-                                                        'random_id': random.randint(0, 10000000)})
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': str(first_name) + ', '
+                                                                   + random.choice(poka_answer),
+                                                                   'random_id': random.randint(0, 10000000)})
                 elif ('споки' in response) or ('спокойной ночи' in response):
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': random.choice(spoki_answer_msg) + ', '
-                                                        + str(first_name),
-                                                        'attachment': random.choice(spoki_answer),
-                                                        'random_id': random.randint(0, 10000000)})
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': random.choice(spoki_answer_msg)
+                                                                   + ', ' + str(first_name),
+                                                                   'attachment': random.choice(spoki_answer),
+                                                                   'random_id': random.randint(0, 10000000)})
                 elif response in ['хабар спасибо']:
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', Это моя работа 😎',
-                                                        'random_id': random.randint(0, 10000000)})
-                elif ('🌚' in response) or ('🌝' in response) or\
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': str(first_name) + ', Это моя работа 😎',
+                                                                   'random_id': random.randint(0, 10000000)})
+                elif ('🌚' in response) or ('🌝' in response) or \
                         ('😎' in response) or ('🌖' in response) or ('😏' in response):
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': random.choice(smile_answer),
-                                                        'random_id': random.randint(0, 10000000)})
-                elif response in ['хабар гадай', 'хабар гадай.']:
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': random.choice(smile_answer),
+                                                                   'random_id': random.randint(0, 10000000)})
+                elif response in ['хабар гадай']:
                     answers = (random.choice(list(open('prinakaz.txt', encoding="utf-8"))))
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', ' + answers,
-                                                        'random_id': random.randint(0, 10000000)})
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': str(first_name) + ', ' + answers,
+                                                                   'random_id': random.randint(0, 10000000)})
                 elif 'хабар шар ' in response:
                     lastword = response.replace('хабар шар ', '')
                     if str(lastword) not in '':
-                        vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                            'message': str(first_name) + ', '
-                                                            + random.choice(shar_answers),
-                                                            'random_id': random.randint(0, 10000000)})
+                        Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                       'message': str(first_name) + ', '
+                                                                       + random.choice(shar_answers),
+                                                                       'random_id': random.randint(0, 10000000)})
                 elif response in ['хабар помощь']:
-                    vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) +
-                                                        ', Статья с функциями скоро будет',
-                                                        'random_id': random.randint(0, 10000000)})
+                    Auth.vk_session_group.method('messages.send', {'peer_id': event.obj.peer_id,
+                                                                   'message': str(first_name) +
+                                                                   ', Статья с функциями скоро будет',
+                                                                   'random_id': random.randint(0, 10000000)})
                 elif response in ['хабар флекс']:
-                    functions.get_flex_picture(event, first_name)
+                    send_wallpost_things(flex_groups, 1, 1, event, first_name)
                 elif response in ['хабар мудрость']:
-                    functions.send_mudrost(vk_session, event, first_name)
+                    random_mudrost(event, first_name)
                 elif response in ['хабар крипота']:
-                    functions.send_creepy(vk_session, event, first_name)
+                    random_creepy(event, first_name)
                 elif response in ['хабар меладзе']:
-                    functions.get_random_meladze(yt_client, event, first_name)
+                    get_random_meladze(event, first_name)
                 elif response in ['хабар павер']:
-                    functions.send_wallpost_things(vk_session_access, event, dmc_groups, first_name, 1, 1)
+                    send_wallpost_things(dmc_groups, 1, 1, event, first_name)
                 elif response in ['хабар сэйлем', 'хабар сайлем', 'хабар сейлем']:
-                    functions.send_wallpost_things(vk_session_access, event, salem_group_id, first_name, 1, 1)
+                    send_wallpost_things(salem_group_id, 1, 1, event, first_name)
                 elif response in ['хабар живец']:
-                    functions.send_wallpost_things(vk_session_access, event, parrot_group_id, first_name, 1, 1)
+                    send_wallpost_things(parrot_group_id, 1, 1, event, first_name)
                 elif response in ['хабар аниме']:
-                    functions.send_wallpost_things(vk_session_access, event, anime_group_id, first_name, 1, 1)
+                    send_wallpost_things(anime_group_id, 1, 1, event, first_name)
                 elif response in ['хабар винкс']:
-                    functions.send_wallpost_things(vk_session_access, event, winx_group_id, first_name, 1, 1)
+                    send_wallpost_things(winx_group_id, 1, 1, event, first_name)
                 elif 'хабар скажи ' in response:
-                    functions.habar_say(vk_session, polly_client, response, first_name, event)
-                elif response in ['хабар оцени']:
-                    functions.habar_oceni(vk_session, event, first_name)
+                    habar_say(response, event, first_name)
+                elif 'хабар оцени ' in response:
+                    habar_oceni(event, first_name)
                 elif ('альянс' in response) or ('alliance' in response):
-                    functions.send_alliance(vk_session, event, first_name)
+                    send_alliance(event, first_name)
                 elif 'пидор' in response:
                     vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': 'Сам пидор, ' + str(first_name),
+                                                        'message': 'Сам пидор, ' + first_name,
                                                         'random_id': random.randint(0, 10000000)})
                 elif response in mbtipidor:
                     vk_session.method('messages.send', {'peer_id': event.obj.peer_id,
-                                                        'message': str(first_name) + ', А может ты пидор ?',
+                                                        'message': first_name + ', А может ты пидор ?',
                                                         'random_id': random.randint(0, 10000000)})
     except:
-        pass
+        raise
