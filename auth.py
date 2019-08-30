@@ -1,9 +1,11 @@
-from vk_api.bot_longpoll import VkBotLongPoll
-import vk_api
-from yandex.Translater import Translater
-from googleapiclient.discovery import build
 import boto3
-from settings import *
+import vk_api
+from googleapiclient.discovery import build
+from vk_api.bot_longpoll import VkBotLongPoll
+from yandex.Translater import Translater
+
+from settings import yandex_trnsl_api_key, group_api_key, group_id, access_token, aws_access_key_id, \
+    aws_secret_access_key, yt_api_key
 
 
 class Auth:
