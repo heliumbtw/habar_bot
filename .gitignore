@@ -1,0 +1,7 @@
+settings.py
+comments.py
+speech.ogg
+access_token.txt
+help.rtf
+.idea/
+__pycache__/
