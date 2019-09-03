@@ -108,11 +108,11 @@ class functions:
                                                        ', Статья с функциями скоро будет(наверное)',
                                                        'random_id': random.randint(0, 1000000000)})
 
-    def get_wallpost_things(self, groups_dict, text_flag, photo_flag):
+    def send_wallpost_things(self, groups_dict, text_flag, photo_flag):
         data = []
         access_keys = []
         owner_id = []
-        text = ""
+        text = self.first_name + ", "
         grp = random.choice(groups_dict)
         max_num = (Auth.vk_session_user.method('wall.get', {'owner_id': grp,
                                                             'count': 0, 'access_token': service_app_key}))['count']
@@ -123,48 +123,34 @@ class functions:
         try:
             if 'copy_history' not in wallpost['items'][0].keys():
                 if text_flag == 1:
-                    text = '' + wallpost['items'][0]['text']
+                    text = text + wallpost['items'][0]['text']
                 if photo_flag == 1:
                     if wallpost['items'][0]['attachments'][0]['type'] == "photo":
-                        photo = wallpost['items'][0]['attachments']
                         i = 0
                         while True:
-                            owner_id = photo[i]['photo']['owner_id']
-                            data.append(photo[i]['photo']['id'])
-                            access_keys.append(photo[i]['photo']['access_key'])
+                            owner_id.append(wallpost['items'][0]['attachments'][i]['photo']['owner_id'])
+                            data.append(wallpost['items'][0]['attachments'][i]['photo']['id'])
+                            access_keys.append(wallpost['items'][0]['attachments'][i]['photo']['access_key'])
                             i += 1
-                            if i == len(photo):
+                            if i == len(wallpost['items'][0]['attachments']):
                                 break
-                return data, text, owner_id, access_keys
-        except Exception:
-            self.send_wallpost_things(groups_dict, text_flag, photo_flag)
-
-    def send_wallpost_things(self, groups_dict, text_flag, photo_flag):
-        try:
-            data, text, owner_id, access_keys = self.get_wallpost_things(groups_dict, text_flag, photo_flag)
-            photos_string = ""
-            if text_flag == 1:
-                text = self.first_name + ', ' + text
-                text_flag = 2
-            if photo_flag == 1:
-                if data:
-                    i = 0
-                    while True:
-                        data[i] = 'photo%s_%s_%s' % (str(owner_id), str(data[i]), str(access_keys[i]))
-                        i += 1
-                        if i == len(data):
-                            break
-                    photos_string = ','.join(data)
-                    photo_flag = 2
-            if (text_flag == 2) and (photo_flag == 2):
-                Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id, 'message': text,
-                                                               'random_id': random.randint(0, 1000000000),
-                                                               'attachment': photos_string})
+        except:
+            return self.send_wallpost_things(groups_dict, text_flag, photo_flag)
+        photos_string = ""
+        if photo_flag == 1:
+            if data:
+                i = 0
+                while True:
+                    data[i] = 'photo%s_%s_%s' % (str(owner_id[i]), str(data[i]), str(access_keys[i]))
+                    i += 1
+                    if i == len(data):
+                        break
+                photos_string = ','.join(data)
             else:
-                del data, text, owner_id, access_keys
-                self.send_wallpost_things(groups_dict, text_flag, photo_flag)
-        except Exception:
-            self.get_wallpost_things(groups_dict, text_flag, photo_flag)
+                return self.send_wallpost_things(groups_dict, text_flag, photo_flag)
+        Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id, 'message': text,
+                                                       'random_id': random.randint(0, 1000000000),
+                                                       'attachment': photos_string})
 
     def mudrost(self):
         max_num = (Auth.vk_session_user.method('wall.search', {'owner_id': mudrost_group_id, 'query': '#мудрость',
@@ -174,7 +160,7 @@ class functions:
                                                               'count': 1, 'offset': num,
                                                               'access_token': service_app_key})['items'][0]['text']
         if 'Маяковский' in mudrost:
-            self.mudrost()
+            return self.mudrost()
         else:
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', ' + str(mudrost),
@@ -245,7 +231,6 @@ class functions:
                                                            'attachment': 'video%s_%s_%s' % (str(owner_id),
                                                                                             str(video_id),
                                                                                             str(access_key))})
-            pass
 
     def get_meladze(self):
         playlistitems_max = Auth.youtube_client.playlistItems().list(
