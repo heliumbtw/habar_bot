@@ -108,7 +108,7 @@ class functions:
                                                        ', Статья с функциями скоро будет(наверное)',
                                                        'random_id': random.randint(0, 1000000000)})
 
-    def send_wallpost_things(self, groups_dict, text_flag, photo_flag):
+    def send_wallpost_things(self, groups_dict, text=None, photo=None):
         data = []
         access_keys = []
         owner_id = []
@@ -122,9 +122,9 @@ class functions:
                                                             'access_token': service_app_key})
         try:
             if 'copy_history' not in wallpost['items'][0].keys():
-                if text_flag == 1:
+                if text == 'text':
                     text = text + wallpost['items'][0]['text']
-                if photo_flag == 1:
+                if photo == 'photo':
                     if wallpost['items'][0]['attachments'][0]['type'] == "photo":
                         i = 0
                         while True:
@@ -135,9 +135,9 @@ class functions:
                             if i == len(wallpost['items'][0]['attachments']):
                                 break
         except:
-            return self.send_wallpost_things(groups_dict, text_flag, photo_flag)
+            return self.send_wallpost_things(groups_dict, text, photo)
         photos_string = ""
-        if photo_flag == 1:
+        if photo == 'photo':
             if data:
                 i = 0
                 while True:
@@ -147,7 +147,7 @@ class functions:
                         break
                 photos_string = ','.join(data)
             else:
-                return self.send_wallpost_things(groups_dict, text_flag, photo_flag)
+                return self.send_wallpost_things(groups_dict, text, photo)
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id, 'message': text,
                                                        'random_id': random.randint(0, 1000000000),
                                                        'attachment': photos_string})

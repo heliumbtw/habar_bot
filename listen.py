@@ -43,15 +43,15 @@ class listen:
                     elif response in ['хабар меладзе']:
                         f.get_meladze()
                     elif response in ['хабар павер']:
-                        f.send_wallpost_things(dmc_groups, 1, 1)
+                        f.send_wallpost_things(dmc_groups, text='text', photo='photo')
                     elif response in ['хабар сэйлем', 'хабар сайлем', 'хабар сейлем']:
-                        f.send_wallpost_things(salem_group_id, 1, 1)
+                        f.send_wallpost_things(salem_group_id, text='text', photo='photo')
                     elif response in ['хабар живец']:
-                        f.send_wallpost_things(parrot_group_id, 1, 1)
+                        f.send_wallpost_things(parrot_group_id, text='text', photo='photo')
                     elif response in ['хабар аниме']:
-                        f.send_wallpost_things(anime_group_id, 1, 1)
+                        f.send_wallpost_things(anime_group_id, text='text', photo='photo')
                     elif response in ['хабар винкс']:
-                        f.send_wallpost_things(winx_group_id, 1, 1)
+                        f.send_wallpost_things(winx_group_id, text='text', photo='photo')
                     elif 'хабар оцени ' in response:
                         f.habar_oceni()
                     #elif 'хабар скажи ' in response:
