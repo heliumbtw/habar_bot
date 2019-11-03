@@ -1,5 +1,6 @@
 # habar_bot
 Хабар бот (VK)
+
 1) rename settings_git.py to settings.py
 
 2)create db
