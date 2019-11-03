@@ -54,6 +54,9 @@ class listen:
                         f.send_wallpost_things(winx_group_id, text='text', photo='photo')
                     elif 'хабар оцени ' in response:
                         f.habar_oceni()
+                    elif self.event.obj.attachments:
+                        if any(attach_type in self.event.obj.attachments[0]['type'] for attach_type in ['wall', 'photo']):
+                            f.random_rate_message()
                     elif 'хабар скажи ' in response:
                         f.habar_say(response)
                     elif ('альянс' in response) or ('alliance' in response):

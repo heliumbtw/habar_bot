@@ -5,3 +5,5 @@ access_token.txt
 help.rtf
 .idea/
 __pycache__/
+tts.db
+venv/

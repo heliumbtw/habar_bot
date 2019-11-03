@@ -2,10 +2,11 @@ import random
 
 import requests
 
+from secrets import randbelow
 from auth import Auth
 from settings import service_app_key, mudrost_group_id, creepy_group_id, meladze_playlist
 from words import secret_trigger_answer, meladze_songs, shar_answers, smile_answer, spoki_answer, spoki_answer_msg, \
-    poka_answer, privet_answer
+    poka_answer, privet_answer, ratings
 from db_functions import tts_db
 
 
@@ -22,25 +23,25 @@ class functions:
     def habar_oceni(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                                  + str(random.randint(0, 10)) + '/10',
+                                                       + ratings[(random.randint(0, 10))],
                                                        'random_id': random.randint(0, 100000000)})
 
     def privet(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                                  + random.choice(privet_answer),
+                                                       + random.choice(privet_answer),
                                                        'random_id': random.randint(0, 100000000)})
 
     def poka(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                                  + random.choice(poka_answer),
+                                                       + random.choice(poka_answer),
                                                        'random_id': random.randint(0, 1000000000)})
 
     def spoki(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': random.choice(spoki_answer_msg)
-                                                                  + ', ' + self.first_name,
+                                                       + ', ' + self.first_name,
                                                        'attachment': random.choice(spoki_answer),
                                                        'random_id': random.randint(0, 1000000000)})
 
@@ -65,13 +66,13 @@ class functions:
         if str(lastword) not in '':
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', '
-                                                                      + random.choice(shar_answers),
+                                                           + random.choice(shar_answers),
                                                            'random_id': random.randint(0, 1000000000)})
 
     def help(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name +
-                                                                  ', Статья с функциями скоро будет(наверное)',
+                                                       ', Статья с функциями скоро будет(наверное)',
                                                        'random_id': random.randint(0, 1000000000)})
 
     def send_wallpost_things(self, groups_dict, text=None, photo=None):
@@ -280,3 +281,12 @@ class functions:
     def habar_say(self, response):
         text_for_aws = response.replace('хабар скажи ', '')
         return self.aws_tts(text_for_aws)
+
+    def random_rate_message(self):
+        if randbelow(10) in [3, 5, 7, 9]:
+            Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
+                                                           'message': self.first_name + ', '
+                                                           + ratings[(random.randint(0, 10))],
+                                                           'random_id': random.randint(0, 100000000)})
+        else:
+            pass
