@@ -54,8 +54,8 @@ class listen:
                         f.send_wallpost_things(winx_group_id, text='text', photo='photo')
                     elif 'хабар оцени ' in response:
                         f.habar_oceni()
-                    #elif 'хабар скажи ' in response:
-                    #    f.habar_say(response)
+                    elif 'хабар скажи ' in response:
+                        f.habar_say(response)
                     elif ('альянс' in response) or ('alliance' in response):
                         f.send_alliance()
                     elif any(trigger in response for trigger in secret_trigger):

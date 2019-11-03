@@ -6,41 +6,7 @@ from auth import Auth
 from settings import service_app_key, mudrost_group_id, creepy_group_id, meladze_playlist
 from words import secret_trigger_answer, meladze_songs, shar_answers, smile_answer, spoki_answer, spoki_answer_msg, \
     poka_answer, privet_answer
-
-
-def aws_tts(text_to_say, event, first_name):
-    if str(text_to_say) not in ('', ' ', '  ', '   ', '    ', '     '):
-        if len(text_to_say) <= 3000:
-            answer = Auth.polly_client.synthesize_speech(VoiceId='Maxim', OutputFormat='ogg_vorbis',
-                                                         Text=text_to_say)
-            file = open('speech.ogg', 'wb')
-            file.write(answer['AudioStream'].read())
-            tts_url = Auth.vk_session_group.method('docs.getMessagesUploadServer',
-                                                   {'type': 'audio_message',
-                                                    'peer_id': event.obj.peer_id
-                                                    })['upload_url']
-            file = {'file': ('speech.ogg', open('speech.ogg', 'rb'))}
-            r = requests.post(tts_url, files=file)
-            r_string = r.json()['file']
-            r_2 = Auth.vk_session_group.method('docs.save', {'file': r_string})
-            _id = r_2['audio_message']['id']
-            owner_id = r_2['audio_message']['owner_id']
-            Auth.vk_session_group.method('messages.send',
-                                         {'peer_id': event.obj.peer_id,
-                                          'message': first_name + ', ',
-                                          'random_id': random.randint(0, 10000000),
-                                          'attachment': 'audio_message%s_%s' % (str(owner_id), str(_id))})
-        else:
-            Auth.vk_session_group.method('messages.send',
-                                         {'peer_id': event.obj.peer_id,
-                                          'message': first_name + ', вы ввели слишком большую пасту',
-                                          'random_id': random.randint(0, 10000000)})
-    del text_to_say
-
-
-def habar_say(response, event, first_name):
-    text_for_aws = response.replace('хабар скажи ', '')
-    aws_tts(text_for_aws, event, first_name)
+from db_functions import tts_db
 
 
 class functions:
@@ -56,25 +22,25 @@ class functions:
     def habar_oceni(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                       + str(random.randint(0, 10)) + '/10',
+                                                                  + str(random.randint(0, 10)) + '/10',
                                                        'random_id': random.randint(0, 100000000)})
 
     def privet(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                       + random.choice(privet_answer),
+                                                                  + random.choice(privet_answer),
                                                        'random_id': random.randint(0, 100000000)})
 
     def poka(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name + ', '
-                                                       + random.choice(poka_answer),
+                                                                  + random.choice(poka_answer),
                                                        'random_id': random.randint(0, 1000000000)})
 
     def spoki(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': random.choice(spoki_answer_msg)
-                                                       + ', ' + self.first_name,
+                                                                  + ', ' + self.first_name,
                                                        'attachment': random.choice(spoki_answer),
                                                        'random_id': random.randint(0, 1000000000)})
 
@@ -99,13 +65,13 @@ class functions:
         if str(lastword) not in '':
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', '
-                                                           + random.choice(shar_answers),
+                                                                      + random.choice(shar_answers),
                                                            'random_id': random.randint(0, 1000000000)})
 
     def help(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': self.first_name +
-                                                       ', Статья с функциями скоро будет(наверное)',
+                                                                  ', Статья с функциями скоро будет(наверное)',
                                                        'random_id': random.randint(0, 1000000000)})
 
     def send_wallpost_things(self, groups_dict, text=None, photo=None):
@@ -272,3 +238,45 @@ class functions:
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                        'message': message,
                                                        'random_id': random.randint(0, 1000000000)})
+
+    def aws_tts(self, text_to_say):
+        if str(text_to_say) not in ('', ' ', '  '):
+            if len(text_to_say) < 3000:
+                tts = tts_db()
+                if tts.check_tts(len(text_to_say)):
+                    answer = Auth.polly_client.synthesize_speech(VoiceId='Maxim', OutputFormat='ogg_vorbis',
+                                                                 Text=text_to_say)
+                    file = open('speech.ogg', 'wb')
+                    file.write(answer['AudioStream'].read())
+                    tts_url = Auth.vk_session_group.method('docs.getMessagesUploadServer',
+                                                           {'type': 'audio_message',
+                                                            'peer_id': self.event.obj.peer_id
+                                                            })['upload_url']
+                    file = {'file': ('speech.ogg', open('speech.ogg', 'rb'))}
+                    upload_speech = requests.post(tts_url, files=file)
+                    r = Auth.vk_session_group.method('docs.save',
+                                                     {'file': upload_speech.json()['file']})
+                    Auth.vk_session_group.method('messages.send',
+                                                 {'peer_id': self.event.obj.peer_id,
+                                                  'message': self.first_name + ', ',
+                                                  'random_id': random.randint(0, 1000000000),
+                                                  'attachment': 'audio_message%s_%s' % (r['audio_message']['owner_id'],
+                                                                                        r['audio_message']['id'])})
+                else:
+                    Auth.vk_session_group.method('messages.send',
+                                                 {'peer_id': self.event.obj.peer_id,
+                                                  'message': self.first_name + ', на сегодня осталось ' +
+                                                  tts.check_tts(len(text_to_say)) + ' символов',
+                                                  'random_id': random.randint(0, 1000000000)})
+
+            else:
+                Auth.vk_session_group.method('messages.send',
+                                             {'peer_id': self.event.obj.peer_id,
+                                              'message': self.first_name + ', до 2999 символов в 1 сообщении.\n'
+                                                                           'В твоем сейчас ' + str(len(text_to_say))
+                                                                           + ' символов',
+                                              'random_id': random.randint(0, 1000000000)})
+
+    def habar_say(self, response):
+        text_for_aws = response.replace('хабар скажи ', '')
+        return self.aws_tts(text_for_aws)
