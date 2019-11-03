@@ -7,6 +7,13 @@ def datetime_now():
     return str(now.day) + '.' + str(now.month) + '.' + str(now.year)
 
 
+# create db
+# conn = sqlite3.connect('tts.db')
+# c = conn.cursor()
+# c.execute('''CREATE TABLE tts
+#              (date text, qty real)''')
+# conn.commit()
+
 class tts_db:
     def __init__(self):
         self.conn = self.create_conn()
