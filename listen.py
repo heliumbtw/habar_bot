@@ -34,14 +34,14 @@ class listen:
                         f.shar(response)
                     elif response in ['хабар помощь', 'помощь', 'хабар функции', 'функции']:
                         f.help()
-                    elif response in ['хабар флекс']:
-                        f.send_wallpost_things(flex_groups, 1, 1)
                     elif response in ['хабар мудрость']:
                         f.mudrost()
                     elif response in ['хабар крипота']:
                         f.creepy()
                     elif response in ['хабар меладзе']:
                         f.get_meladze()
+                    elif response in ['хабар флекс']:
+                        f.send_wallpost_things(flex_groups, text='text', photo='photo')
                     elif response in ['хабар павер']:
                         f.send_wallpost_things(dmc_groups, text='text', photo='photo')
                     elif response in ['хабар сэйлем', 'хабар сайлем', 'хабар сейлем']:
