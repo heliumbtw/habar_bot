@@ -2,7 +2,6 @@ import random
 
 import requests
 
-from secrets import randbelow
 from auth import Auth
 from settings import service_app_key, mudrost_group_id, creepy_group_id, meladze_playlist
 from words import secret_trigger_answer, meladze_songs, shar_answers, smile_answer, spoki_answer, spoki_answer_msg, \
@@ -283,7 +282,7 @@ class functions:
         return self.aws_tts(text_for_aws)
 
     def random_rate_message(self):
-        if randbelow(10) in [3, 5, 7, 9]:
+        if random.randint(0, 10) in [1, 3, 5, 7, 9]:
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', '
                                                            + ratings[(random.randint(0, 10))],
