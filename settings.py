@@ -4,7 +4,7 @@ service_app_key = ''  # Сервисный ключ доступа из прил
 access_token = ''  # ключ доступа пользователя, админа группы с ботом например
 user_id = ''  # id юзера
 group_id = ''  # id группы с ботом
-minus_group_id = '-176071592'  # тоже самое с минусом
+minus_group_id = '-'  # тоже самое с минусом
 # группы откуда берутся пикчи/текст для функций
 anime_group_id = ['-128135550']
 parrot_group_id = ['-155418187']
@@ -17,5 +17,5 @@ winx_group_id = ['-125327221']
 #
 aws_access_key_id = ''  # aws амазон токен
 aws_secret_access_key = ''  # aws амазон секртеный ключ
-yt_api_key = 'AIzaSyA63ZnMfc410ERO947wBCjs2Iydi0dSDhY'  # youtube api ключ
-meladze_playlist = 'PLlXM7Mi8yL10giTGFyg-JeB0qJ88dQmvn'  # id меладзе плейлиста
+yt_api_key = ''  # youtube api ключ
+meladze_playlist = ''  # id меладзе плейлиста/любого другого плейлиста
