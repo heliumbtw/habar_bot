@@ -282,7 +282,7 @@ class functions:
         return self.aws_tts(text_for_aws)
 
     def random_rate_message(self):
-        if random.randint(0, 10) in [1, 3, 5, 7, 9]:
+        if random.randint(0, 10) in [1, 3, 5, 7]:
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', '
                                                            + ratings[(random.randint(0, 10))],
