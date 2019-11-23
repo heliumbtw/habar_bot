@@ -16,7 +16,6 @@ class Functions:
 
     def get_name(self):
         user_info = (Auth.vk_session_group.method('users.get', {'user_ids': self.event.obj.from_id}))
-        print(self.event)
         return str(user_info[0]['first_name'])
 
     def habar_oceni(self):

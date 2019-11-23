@@ -1,4 +1,4 @@
-from listen import listen
+from listen import Listen
 from flask import Flask, request, json
 
 from settings import callback_confirmation_token
@@ -14,7 +14,7 @@ def processing():
     if data['type'] == 'confirmation':
         return callback_confirmation_token
     elif data['type'] == 'message_new':
-        l1 = listen()
+        l1 = Listen()
         l1.choose()
         return 'ok'
     return 'ok'

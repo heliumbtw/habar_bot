@@ -65,4 +65,4 @@ class Listen:
                     elif any(trigger in response for trigger in secret_trigger):
                         f.secret_trigger()
         except Exception:
-            raise
+            pass
