@@ -9,15 +9,15 @@ from words import secret_trigger_answer, meladze_songs, shar_answers, smile_answ
 from db_functions import tts_db
 
 
-class functions:
+class Functions:
     def __init__(self, event):
         self.event = event
         self.first_name = self.get_name()
 
     def get_name(self):
         user_info = (Auth.vk_session_group.method('users.get', {'user_ids': self.event.obj.from_id}))
-        name = user_info[0]['first_name']
-        return str(name)
+        print(self.event)
+        return str(user_info[0]['first_name'])
 
     def habar_oceni(self):
         Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
@@ -282,7 +282,7 @@ class functions:
         return self.aws_tts(text_for_aws)
 
     def random_rate_message(self):
-        if random.randint(0, 10) in [1, 3, 5, 7]:
+        if random.randint(0, 10) in [1, 5, 7]:
             Auth.vk_session_group.method('messages.send', {'peer_id': self.event.obj.peer_id,
                                                            'message': self.first_name + ', '
                                                            + ratings[(random.randint(0, 10))],

@@ -4,8 +4,7 @@ from googleapiclient.discovery import build
 from vk_api.bot_longpoll import VkBotLongPoll
 
 
-from settings import yandex_trnsl_api_key, group_api_key, group_id, access_token, aws_access_key_id, \
-    aws_secret_access_key, yt_api_key
+from settings import group_api_key, group_id, access_token, aws_access_key_id, aws_secret_access_key, yt_api_key
 
 
 class Auth:

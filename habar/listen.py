@@ -1,12 +1,12 @@
 from vk_api.bot_longpoll import VkBotEventType
 
 from auth import Auth
-from functions import functions
+from functions import Functions
 from settings import flex_groups, dmc_groups, salem_group_id, parrot_group_id, anime_group_id, winx_group_id
 from words import secret_trigger, smile_trigger
 
 
-class listen:
+class Listen:
     def __init__(self):
         self.event = None
 
@@ -14,7 +14,7 @@ class listen:
         try:
             for self.event in Auth.longpoll.listen():
                 if self.event.type == VkBotEventType.MESSAGE_NEW:
-                    f = functions(self.event)
+                    f = Functions(self.event)
                     response = self.event.obj.text.lower()
                     if 'хабар оцени ' in response:
                         f.habar_oceni()
@@ -55,7 +55,8 @@ class listen:
                     elif 'хабар оцени ' in response:
                         f.habar_oceni()
                     elif self.event.obj.attachments:
-                        if any(attach_type in self.event.obj.attachments[0]['type'] for attach_type in ['wall', 'photo']):
+                        if any(attach_type in self.event.obj.attachments[0]['type']
+                               for attach_type in ['wall', 'photo']):
                             f.random_rate_message()
                     elif 'хабар скажи ' in response:
                         f.habar_say(response)
